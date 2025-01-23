@@ -22,13 +22,13 @@ class Setting extends Model
         'is_public' => 'boolean',
     ];
 
-    public static function get($key, $default = null)
+    public static function getValue($key, $default = null)
     {
         $setting = static::where('key', $key)->first();
         return $setting ? $setting->value : $default;
     }
 
-    public static function set($key, $value, $group = 'general')
+    public static function set($key, $value, $group = 'general'): Setting
     {
         return static::updateOrCreate(
             ['key' => $key],
