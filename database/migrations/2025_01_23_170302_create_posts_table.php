@@ -16,12 +16,16 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('content');
+            $table->text('excerpt')->nullable();
+            $table->longText('content');
             $table->string('featured_image')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->string('meta_keywords')->nullable();
-            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
+            $table->boolean('is_featured')->default(false);
+            $table->boolean('comments_enabled')->default(true);
+            $table->integer('view_count')->default(0);
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
