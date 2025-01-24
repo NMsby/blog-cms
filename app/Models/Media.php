@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\MediaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +26,11 @@ class Media extends Model
         'additional_attributes' => 'array',
         'size' => 'integer'
     ];
+
+    protected static function newFactory(): MediaFactory
+    {
+        return MediaFactory::new();
+    }
 
     public function user(): BelongsTo
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,14 @@ class Post extends Model
         'is_featured' => 'boolean',
         'comments_enabled' => 'boolean',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): PostFactory
+    {
+        return PostFactory::new();
+    }
 
     protected static function boot(): void
     {

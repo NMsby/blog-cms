@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\SettingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,6 +22,11 @@ class Setting extends Model
     protected $casts = [
         'is_public' => 'boolean',
     ];
+
+    protected static function newFactory(): SettingFactory
+    {
+        return SettingFactory::new();
+    }
 
     public static function getValue($key, $default = null)
     {
