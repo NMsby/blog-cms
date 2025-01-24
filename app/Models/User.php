@@ -93,4 +93,13 @@ class User extends Authenticatable
     {
         return $this->role === 'author';
     }
+
+    public function hasRole(string|array $roles): bool
+    {
+        if (is_string($roles)) {
+            return $this->role === $roles;
+        }
+
+        return in_array($this->role, $roles);
+    }
 }
