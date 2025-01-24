@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
-//use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Frontend\BlogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,8 +22,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Frontend routes
+// Guest routes
 Route::get('/', [App\Http\Controllers\Frontend\HomeController::class, 'index'])->name('home');
+
+// Blog routes
+Route::name('blog.')->group(function () {
+    Route::get('/blog', [BlogController::class, 'index'])->name('index');
+    Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('show');
+    Route::get('/category/{category:slug}', [BlogController::class, 'category'])->name('category');
+    Route::get('/tag/{tag:slug}', [BlogController::class, 'tag'])->name('tag');
+});
+
+// Frontend comment routes
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 //Route::get('/', function () {
 //    return view('welcome');
