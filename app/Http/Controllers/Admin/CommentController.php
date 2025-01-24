@@ -66,7 +66,8 @@ class CommentController extends Controller
             'action' => 'required|in:approve,mark_as_spam,delete'
         ]);
 
-        $comments = Comment::whereIn('id', $request->comment_ids);
+        $comments = Comment::whereIn('id', $validated['comment_ids']);
+        $message = '';
 
         switch($request->action) {
             case 'approve':

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
+
 
 class MediaController extends Controller
 {
@@ -86,11 +88,11 @@ class MediaController extends Controller
 
     protected function processImage($path)
     {
-        $image = Image::make(Storage::disk('public')->path($path));
+        $image = Image::read(Storage::disk('public')->path($path));
 
         // Generate thumbnail
         $thumbnailPath = 'media/thumbnails/' . basename($path);
-        $thumbnail = $image->fit(300, 300);
+        $thumbnail = $image->resize(300, 300);
         Storage::disk('public')->put($thumbnailPath, $thumbnail->encode());
 
         return [
