@@ -11,13 +11,27 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $comments = Comment::with(['post', 'user'])
+        $query = Comment::query();
+        $status = $request->input('status');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $comments = $query->with(['user', 'post'])
             ->latest()
             ->paginate(15);
 
-        return view('admin.comments.index', compact('comments'));
+        $counts = [
+            'total' => Comment::count(),
+            'pending' => Comment::where('status', 'pending')->count(),
+            'approved' => Comment::where('status', 'approved')->count(),
+            'spam' => Comment::where('status', 'spam')->count(),
+        ];
+
+        return view('admin.comments.index', array_merge(compact('comments'), $counts));
     }
 
     /**
