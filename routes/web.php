@@ -92,3 +92,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         Route::post('settings/clear-cache', [SettingController::class, 'clearCache'])->name('settings.clear-cache');
     });
 });
+
+//Route::get('/admin/test', function() {
+//    dd(auth()->user()->role);
+//})->middleware(['auth', 'role:admin']);

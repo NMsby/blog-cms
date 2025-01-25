@@ -46,7 +46,6 @@ class CategoryController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
-
         Category::create($validated);
 
         return redirect()->route('admin.categories.index')
@@ -70,7 +69,15 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|max:255',
             'description' => 'nullable',
-            'parent_id' => 'nullable|exists:categories,id',
+            'parent_id' => [
+                'nullable',
+                'exists:categories,id',
+                function ($attribute, $value, $fail) use ($category) {
+                    if ($value == $category->id) {
+                        $fail('The parent category cannot be the category itself.');
+                    }
+                }
+            ],
             'meta_title' => 'nullable|max:255',
             'meta_description' => 'nullable',
             'order' => 'nullable|integer',
@@ -78,7 +85,6 @@ class CategoryController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
-
         $category->update($validated);
 
         return redirect()->route('admin.categories.index')
@@ -90,8 +96,12 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        if ($category->children()->exists()) {
+            return redirect()->route('admin.categories.index')
+                ->with('error', 'Category has children categories.');
+        }
 
+        $category->delete();
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category deleted successfully.');
     }
