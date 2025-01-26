@@ -13,6 +13,10 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Styles -->
+        <script src="https://cdn.tiny.cloud/1/lcugueg1lhtpmnv56zjf9shxtcrsvol11yszc1kga1o04cee/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+        @stack('scripts')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

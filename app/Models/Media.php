@@ -19,12 +19,23 @@ class Media extends Model
         'mime_type',
         'size',
         'path',
-        'additional_attributes'
+        'additional_attributes',
+        'created_at',
+        'updated_at'
     ];
 
     protected $casts = [
         'additional_attributes' => 'array',
-        'size' => 'integer'
+        'size' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime'
+    ];
+
+    protected array $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     protected static function newFactory(): MediaFactory

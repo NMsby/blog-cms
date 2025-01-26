@@ -7,11 +7,11 @@
         <div class="flex justify-between items-start mb-6">
             <div>
                 <h2 class="text-2xl font-bold">{{ $media->original_filename }}</h2>
-                <p class="text-gray-500">Uploaded by {{ $media->user->name }} on {{ $media->created_at->format('M d, Y H:i') }}</p>
+                <p class="text-gray-500">Uploaded by {{ $media->user ? $media->user->name : 'Unknown User' }} {{ $media->created_at ? ' on ' . $media->created_at->format('M d, Y H:i') : '' }}</p>
             </div>
             <div class="flex gap-2">
-                <a href="{{ route('admin.media.download', $media) }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Download</a>
-                <form action="{{ route('admin.media.destroy', $media) }}" method="POST" class="inline">
+                <a href="{{ route('admin.media.download', $media->id) }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Download</a>
+                <form action="{{ route('admin.media.destroy', $media->id) }}" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="return confirm('Are you sure?')">Delete</button>

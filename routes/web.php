@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Frontend\BlogController;
 use Illuminate\Support\Facades\Route;
@@ -56,7 +57,7 @@ require __DIR__.'/auth.php';
 // Admin routes
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // Posts Management
     Route::resource('posts', PostController::class);
@@ -91,8 +92,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
         Route::post('settings/clear-cache', [SettingController::class, 'clearCache'])->name('settings.clear-cache');
     });
+
+    // TinyMCE Image Upload
+    Route::post('upload/image', [UploadController::class, 'imageUpload'])->name('upload.image');
 });
 
-//Route::get('/admin/test', function() {
-//    dd(auth()->user()->role);
-//})->middleware(['auth', 'role:admin']);

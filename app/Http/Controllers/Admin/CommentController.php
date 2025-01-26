@@ -31,7 +31,7 @@ class CommentController extends Controller
             'spam' => Comment::where('status', 'spam')->count(),
         ];
 
-        return view('admin.comments.index', array_merge(compact('comments'), $counts));
+        return view('admin.comments.index', compact('comments', 'counts'));
     }
 
     /**

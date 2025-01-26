@@ -28,12 +28,18 @@
                     </p>
                     <p class="text-xs text-gray-500">{{ $file->size_for_humans }}</p>
                     <div class="mt-2 flex gap-2">
-                        <a href="{{ route('admin.media.show', $file) }}" class="text-xs text-blue-600 hover:text-blue-900">View</a>
-                        <a href="{{ route('admin.media.download', $file) }}" class="text-xs text-green-600 hover:text-green-900">Download</a>
-                        <form action="{{ route('admin.media.destroy', $file) }}" method="POST" class="inline">
+                        <a href="{{ route('admin.media.show', $file) }}" class="inline-flex items-center text-xs text-blue-600 hover:text-blue-900">
+                            <span>View</span>
+                        </a>
+                        <a href="{{ route('admin.media.download', $file) }}" class="inline-flex items-center text-xs text-green-600 hover:text-green-900">
+                            <span>Download</span>
+                        </a>
+                        <form action="{{ route('admin.media.destroy', $file) }}" method="POST" class="inline-flex">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-xs text-red-600 hover:text-red-900" onclick="return confirm('Are you sure?')">Delete</button>
+                            <button type="submit" class="text-xs text-red-600 hover:text-red-900" onclick="return confirm('Are you sure?')">
+                                <span>Delete</span>
+                            </button>
                         </form>
                     </div>
                 </div>

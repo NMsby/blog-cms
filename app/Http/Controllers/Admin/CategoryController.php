@@ -45,7 +45,16 @@ class CategoryController extends Controller
             'is_visible' => 'boolean'
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        // Generate unique slug
+        $slug = Str::slug($validated['name']);
+        $count = 1;
+
+        while (Category::withTrashed()->where('slug', $slug)->exists()) {
+            $slug = Str::slug($validated['name']) . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
         Category::create($validated);
 
         return redirect()->route('admin.categories.index')
@@ -74,7 +83,7 @@ class CategoryController extends Controller
                 'exists:categories,id',
                 function ($attribute, $value, $fail) use ($category) {
                     if ($value == $category->id) {
-                        $fail('The parent category cannot be the category itself.');
+                        $fail('A category cannot be its own parent.');
                     }
                 }
             ],
@@ -84,7 +93,19 @@ class CategoryController extends Controller
             'is_visible' => 'boolean'
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        // Generate unique slug if name changed
+        if ($category->name !== $validated['name']) {
+            $slug = Str::slug($validated['name']);
+            $count = 1;
+
+            while (Category::withTrashed()->where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
+                $slug = Str::slug($validated['name']) . '-' . $count;
+                $count++;
+            }
+
+            $validated['slug'] = $slug;
+        }
+
         $category->update($validated);
 
         return redirect()->route('admin.categories.index')

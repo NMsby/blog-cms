@@ -109,6 +109,7 @@ class MediaController extends Controller
      */
     public function show(Media $media)
     {
+        $media->load('user');
         return view('admin.media.show', compact('media'));
     }
 
