@@ -13,9 +13,40 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @auth
-                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link>
+                        @switch(auth()->user()->role)
+                            @case('admin')
+                                <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                                    {{ __('Admin Dashboard') }}
+                                </x-nav-link>
+                                <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
+                                    {{ __('User Management') }}
+                                </x-nav-link>
+                                <x-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.settings')">
+                                    {{ __('Site Settings') }}
+                                </x-nav-link>
+                                @break
+                            @case('editor')
+                                <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                                    {{ __('Editor Dashboard') }}
+                                </x-nav-link>
+                                <x-nav-link :href="route('admin.posts')" :active="request()->routeIs('admin.posts')">
+                                    {{ __('Manage Posts') }}
+                                </x-nav-link>
+                                @break
+                            @case('author')
+                                <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                                    {{ __('Author Dashboard') }}
+                                </x-nav-link>
+                                <x-nav-link :href="route('admin.posts.create')" :active="request()->routeIs('admin.posts.create')">
+                                    {{ __('Create Post') }}
+                                </x-nav-link>
+                                @break
+
+                            @default
+                                <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                                    {{ __('Home') }}
+                                </x-nav-link>
+                        @endswitch
                     @endauth
                 </div>
             </div>
@@ -52,7 +83,14 @@
                         </x-slot>
                     </x-dropdown>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
+                    <div class="flex space-x-4">
+                        <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                            Login
+                        </a>
+                        <a href="{{ route('register') }}" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700">
+                            Register
+                        </a>
+                    </div>
                 @endauth
             </div>
 

@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Author\DashboardController as AuthorDashboardController;
+use App\Http\Controllers\Author\PostController as AuthorPostController;
 use App\Http\Controllers\Frontend\BlogController;
 use Illuminate\Support\Facades\Route;
 
@@ -97,3 +99,23 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('upload/image', [UploadController::class, 'imageUpload'])->name('upload.image');
 });
 
+// Author routes
+Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('author.')->group(function () {
+    // Dashboard
+    Route::get('/', [AuthorDashboardController::class, 'index'])->name('author.dashboard');
+
+    // Posts Management
+    Route::resource('posts', AuthorPostController::class)->except(['show']);
+
+    // Comments Management
+    Route::resource('comments', CommentController::class)->only(['index', 'destroy']);
+    Route::get('comments/pending', [CommentController::class, 'pending'])->name('comments.pending');
+
+    // Media Management
+    Route::resource('media', MediaController::class);
+    Route::get('media/{media}/download', [MediaController::class, 'download'])->name('media.download');
+
+    // User Profile
+    Route::get('profile', [UserController::class, 'profile'])->name('profile');
+    Route::put('profile', [UserController::class, 'updateProfile'])->name('profile.update');
+});
