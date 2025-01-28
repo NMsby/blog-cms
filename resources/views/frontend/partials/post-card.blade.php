@@ -1,7 +1,7 @@
 {{-- resources/views/frontend/partials/post-card.blade.php --}}
 <article class="bg-white rounded-lg shadow-lg overflow-hidden" x-data="{ showExcerpt: false }">
     @if($post->featured_image)
-        <a href="{{ route('blog.show', $post->slug) }}" class="block aspect-video">
+        <a href="{{ route('blog.show', ['post' => $post]) }}" class="block aspect-video">
             <img src="{{ asset('storage/' . $post->featured_image) }}"
                  alt="{{ $post->title }}"
                  class="w-full h-full object-cover">
@@ -11,7 +11,7 @@
     <div class="p-6">
         <header class="mb-4">
             <h2 class="text-xl font-bold">
-                <a href="{{ route('blog.show', $post->slug) }}"
+                <a href="{{ route('blog.show', ['post' => $post]) }}"
                    class="hover:text-blue-600 transition-colors">
                     {{ $post->title }}
                 </a>

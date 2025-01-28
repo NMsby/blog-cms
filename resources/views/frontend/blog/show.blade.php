@@ -23,11 +23,25 @@
                     <span>{{ $post->user->name }}</span>
                 </div>
                 <span>&middot;</span>
-                <time datetime="{{ $post->published_at->format('Y-m-d') }}">
-                    {{ $post->published_at->format('M d, Y') }}
+                <time datetime="{{ $post->published_at ? $post->published_at->format('Y-m-d') : '' }}">
+                    {{ $post->published_at ? $post->published_at->format('M d, Y') : 'Draft' }}
                 </time>
                 <span>&middot;</span>
                 <span>{{ $post->reading_time }} min read</span>
+                <span>&middot;</span>
+                <div class="flex items-center text-gray-500">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    {{ $post->view_count }} views
+                </div>
+                <!-- Social Media Share buttons -->
+                <div class="flex gap-4 mt-6">
+                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}" target="_blank" class="text-blue-400 hover:text-blue-600">
+                        <!-- Twitter icon -->
+                    </a>
+                </div>
             </div>
 
             @if($post->categories->count())
