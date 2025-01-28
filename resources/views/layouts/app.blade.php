@@ -22,14 +22,18 @@
             @if (isset($header))
                 <header class="bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+                        <h2 class="font-semibold"></h2>
+                        @yield('content')
                     </div>
                 </header>
             @endif
 
             <!-- Page Content -->
-            <main>
-                @yield('content')
+            <main class="py-12">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    @include('layouts.partials.messages')
+                    @yield('content')
+                </div>
             </main>
         </div>
     </body>

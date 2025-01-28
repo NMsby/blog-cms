@@ -11,7 +11,10 @@ use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Author\DashboardController as AuthorDashboardController;
 use App\Http\Controllers\Author\PostController as AuthorPostController;
+use App\Http\Controllers\Author\CommentController as AuthorCommentController;
+use App\Http\Controllers\Author\MediaController as AuthorMediaController;
 use App\Http\Controllers\Frontend\BlogController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,24 +37,11 @@ Route::name('blog.')->group(function () {
     Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('show');
     Route::get('/category/{category:slug}', [BlogController::class, 'category'])->name('category');
     Route::get('/tag/{tag:slug}', [BlogController::class, 'tag'])->name('tag');
+    Route::get('/search/suggestions', [BlogController::class, 'searchSuggestions'])->name('blog.search.suggestions');
 });
 
 // Frontend comment routes
 Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
-
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-//
-//Route::get('/dashboard', function () {
-//    return view('dashboard');
-//})->middleware(['auth', 'verified'])->name('dashboard');
-//
-//Route::middleware('auth')->group(function () {
-//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-//});
 
 // Authentication routes
 require __DIR__.'/auth.php';
@@ -99,23 +89,24 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('upload/image', [UploadController::class, 'imageUpload'])->name('upload.image');
 });
 
+
 // Author routes
-Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('author.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('author')->group(function () {
     // Dashboard
     Route::get('/', [AuthorDashboardController::class, 'index'])->name('author.dashboard');
 
-    // Posts Management
-    Route::resource('posts', AuthorPostController::class)->except(['show']);
+    //Posts
+    Route::resource('posts', AuthorPostController::class)->except(['destroy']);
 
-    // Comments Management
-    Route::resource('comments', CommentController::class)->only(['index', 'destroy']);
-    Route::get('comments/pending', [CommentController::class, 'pending'])->name('comments.pending');
+    //Comments
+    Route::resource('comments', AuthorCommentController::class)->only(['index', 'show']);
+    Route::post('comments/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
 
-    // Media Management
-    Route::resource('media', MediaController::class);
-    Route::get('media/{media}/download', [MediaController::class, 'download'])->name('media.download');
+    //Media
+    Route::resource('media', AuthorMediaController::class);
+    Route::get('media/selector', [AuthorMediaController::class, 'selector'])->name('media.selector');
 
-    // User Profile
-    Route::get('profile', [UserController::class, 'profile'])->name('profile');
-    Route::put('profile', [UserController::class, 'updateProfile'])->name('profile.update');
+    //Profile
+    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 });

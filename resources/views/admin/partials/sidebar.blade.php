@@ -1,7 +1,7 @@
 <aside class="w-64 bg-gray-800 text-white min-h-screen">
     <div class="p-6">
         <nav>
-            <a href="{{ route('admin.dashboard') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-900' : 'hover:bg-gray-700' }}">
+            <a href="{{ route('admin.admin.dashboard') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-900' : 'hover:bg-gray-700' }}">
                 Dashboard
             </a>
 
