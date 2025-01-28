@@ -13,7 +13,7 @@ class BlogController extends Controller
     public function index(Request $request)
     {
         $query = Post::with(['user', 'categories', 'tags'])
-            ->published()
+            ->where('status', 'published')
             ->latest('published_at');
 
         // Apply filters
@@ -63,16 +63,17 @@ class BlogController extends Controller
         ));
     }
 
-    public function show(string $slug)
+    public function show(Post $post)
     {
-        $post = Post::with(['user', 'categories', 'tags', 'comments' => function($query) {
+        if (!$post->where('status', 'published')) {
+            abort(403, "The post is not published.");
+        }
+
+        $post->load(['user', 'categories', 'tags', 'comments' => function($query) {
             $query->approved()->whereNull('parent_id');
         }, 'comments.replies' => function($query) {
             $query->approved();
-        }])
-            ->published()
-            ->where('slug', $slug)
-            ->firstOrFail();
+        }]);
 
         // Increment view count
         $post->increment('view_count');

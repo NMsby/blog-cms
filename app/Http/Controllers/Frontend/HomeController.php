@@ -11,23 +11,21 @@ class HomeController extends Controller
     public function index()
     {
         $featured_posts = Post::with(['user', 'categories'])
-            ->published()
-            ->featured()
+            ->where('status', 'published')
+            ->where('is_featured', true)
             ->latest('published_at')
             ->take(5)
             ->get();
 
         $recent_posts = Post::with(['user', 'categories'])
-            ->published()
+            ->where('status', 'published')
             ->latest('published_at')
             ->take(6)
             ->get();
 
-        $categories = Category::withCount('posts')
-            ->whereHas('posts', function($query) {
-                $query->published();
-            })
-            ->visible()
+        $categories = Category::withCount(['posts' => function($query) {
+            $query->where('status', 'published');
+        }])
             ->take(10)
             ->get();
 
