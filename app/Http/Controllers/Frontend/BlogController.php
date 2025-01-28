@@ -116,4 +116,18 @@ class BlogController extends Controller
 
         return view('frontend.blog.tag', compact('tag', 'posts'));
     }
+
+    public function searchSuggestions(Request $request)
+    {
+        if (!$request->has('q') || strlen($request->q) < 2) {
+            return response()->json();
+        }
+
+        $posts = Post::published()
+            ->where('title', 'like', "%$request->q%")
+            ->take(5)
+            ->get(['id', 'title', 'slug']);
+
+        return response()->json($posts);
+    }
 }

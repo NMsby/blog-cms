@@ -17,8 +17,10 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/';
-    public const ADMIN_HOME = '/admin/';
+    public const HOME = 'home';
+    public const ADMIN_HOME = 'admin';
+    const EDITOR_HOME = 'editor';
+    const AUTHOR_HOME = 'author';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -37,5 +39,22 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+    }
+
+    /**
+     * Define the routes for the application.
+     */
+    public static function redirectPath(): string
+    {
+        if (auth()->check()) {
+            return match (auth()->user()->role) {
+                'admin' => RouteServiceProvider::ADMIN_HOME,
+                'editor' => RouteServiceProvider::EDITOR_HOME,
+                'author' => RouteServiceProvider::AUTHOR_HOME,
+                default => RouteServiceProvider::HOME,
+            };
+        }
+
+        return self::HOME;
     }
 }

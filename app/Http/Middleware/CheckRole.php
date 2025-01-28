@@ -16,7 +16,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (!$request->user() || !in_array($request->user()->role, $roles)) {
-            abort(403, 'Unauthorized action.');
+            abort(403, 'Unauthorized. This area is restricted to administrators only');
         }
         return $next($request);
     }
