@@ -54,6 +54,16 @@ class Post extends Model
             if (empty($post->slug)) {
                 $post->slug = Str::slug($post->title);
             }
+
+            if($post->status === 'published' && !$post->published_at) {
+                $post->published_at = now();
+            }
+        });
+
+        static::updating(function ($post) {
+            if ($post->status === 'published' && !$post->published_at) {
+                $post->published_at = now();
+            }
         });
     }
 
@@ -80,6 +90,7 @@ class Post extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
+            ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
     }
 
