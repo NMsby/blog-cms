@@ -41,7 +41,7 @@ class UserController extends AdminController
             'username' => 'required|string|max:255|unique:users|alpha_dash',
             'password' => ['required', Password::defaults()],
             'role' => 'required|in:admin,editor,author',
-            'avatar' => 'nullable|image|max:1024',
+            'avatar' => 'nullable|image|max:10240',
             'bio' => 'nullable|string',
             'website' => 'nullable|url',
             'social_links' => 'nullable|array'
