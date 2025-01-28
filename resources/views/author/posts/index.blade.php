@@ -40,7 +40,7 @@
                         {{ $post->created_at->format('M d, Y') }}
                     </td>
                     <td class="px-6 py-4 text-sm font-medium">
-                        <a href="{{ route('author.posts.edit', $post) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                        <a href="{{ route('authorposts.edit', $post) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
                         <a href="{{ route('blog.show', $post->slug) }}" class="text-green-600 hover:text-green-900">View</a>
                     </td>
                 </tr>

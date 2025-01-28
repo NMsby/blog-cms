@@ -16,7 +16,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::where('user_id', Auth::id())
-            ->with(['category', 'tags'])
+            ->with(['categories', 'tags'])
             ->latest()
             ->paginate(10);
 
@@ -28,7 +28,7 @@ class PostController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('author.posts.create', compact('categories', 'tags'));
+        return view('authorposts.create', compact('categories', 'tags'));
     }
 
     public function store(Request $request)
@@ -40,7 +40,7 @@ class PostController extends Controller
             'status' => 'required|in:draft,published',
             'category_ids' => 'required|array',
             'tag_ids' => 'nullable|array',
-            'featured_image' => 'nullable|image|max:2048',
+            'featured_image' => 'nullable|image|max:20480',
             'meta_title' => 'nullable|max:255',
             'meta_description' => 'nullable',
         ]);
@@ -60,7 +60,7 @@ class PostController extends Controller
             $post->tags()->sync($request->tag_ids);
         }
 
-        return redirect()->route('author.posts.index')
+        return redirect()->route('authorposts.index')
             ->with('success', 'Post created successfully.');
     }
 

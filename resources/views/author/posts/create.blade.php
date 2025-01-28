@@ -76,9 +76,48 @@
         <script>
             tinymce.init({
                 selector: '#content',
-                plugins: ['link', 'lists', 'image'],
-                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image',
-                height: 400
+                plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                ],
+                toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+                    'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+                    'forecolor backcolor emoticons | help',
+                menu: {
+                    favs: { title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons' }
+                },
+                menubar: 'favs file edit view insert format tools table help',
+                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
+                height: 500,
+                automatic_uploads: true,
+                images_upload_url: '{{ route('admin.upload.image') }}',
+                images_upload_handler: function (blobInfo, success, failure) {
+                    let xhr, formData;
+                    xhr = new XMLHttpRequest();
+                    xhr.withCredentials = false;
+                    xhr.open('POST', '{{ route('admin.upload.image') }}');
+                    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+
+                    xhr.onload = function() {
+                        let json;
+                        if (xhr.status !== 200) {
+                            failure('HTTP Error: ' + xhr.status);
+                            return;
+                        }
+                        json = JSON.parse(xhr.responseText);
+                        if (!json || typeof json.location != 'string') {
+                            failure('Invalid JSON: ' + xhr.responseText);
+                            return;
+                        }
+                        success(json.location);
+                    };
+
+                    formData = new FormData();
+                    formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+                    xhr.send(formData);
+                }
             });
         </script>
     @endpush

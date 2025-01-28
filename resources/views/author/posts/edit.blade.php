@@ -4,7 +4,7 @@
 @section('header', 'Edit Post')
 
 @section('content')
-    <form action="{{ route('author.posts.update', $post) }}" method="POST" enctype="multipart/form-data" class="max-w-4xl">
+    <form action="{{ route('authorposts.update', $post) }}" method="POST" enctype="multipart/form-data" class="max-w-4xl">
         @csrf
         @method('PUT')
         <div class="bg-white shadow-sm rounded-lg p-6">

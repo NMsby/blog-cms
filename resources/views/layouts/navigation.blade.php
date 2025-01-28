@@ -50,7 +50,7 @@
                                     {{ __('Comments') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('blog.index')" :active="request()->routeIs('blog.*')">
-                                    {{ __('View Blog') }}
+                                    {{ __('Blogs') }}
                                 </x-nav-link>
                                 @break
 
@@ -64,11 +64,11 @@
                                     {{ __('Create Post') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('authorposts.index')"
-                                            :active="request()->routeIs('author.posts.index|author.posts.*')">
+                                            :active="request()->routeIs('author.posts.*')">
                                     {{ __('My Posts') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('blog.index')" :active="request()->routeIs('blog.*')">
-                                    {{ __('View Blog') }}
+                                    {{ __('Blogs') }}
                                 </x-nav-link>
                                 @break
 
