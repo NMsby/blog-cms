@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('group')->default('general');
             $table->string('type')->default('text');
             $table->boolean('is_public')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
