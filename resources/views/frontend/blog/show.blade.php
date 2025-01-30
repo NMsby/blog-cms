@@ -2,16 +2,8 @@
 @section('title', $post->title)
 
 @section('content')
-    <article class="max-w-4xl mx-auto px-4 py-8">
+    <article class="max-w-4xl mx-auto px-4 py-4">
         <header class="mb-8">
-            @if($post->featured_image)
-                <div class="rounded-xl overflow-hidden mb-8 aspect-video">
-                    <img src="{{ asset('storage/' . $post->featured_image) }}"
-                         alt="{{ $post->title }}"
-                         class="w-full h-full object-cover">
-                </div>
-            @endif
-
             <h1 class="text-4xl font-bold mb-4">{{ $post->title }}</h1>
 
             <div class="flex flex-wrap items-center gap-4 text-gray-600 mb-6">
@@ -45,13 +37,21 @@
             </div>
 
             @if($post->categories->count())
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 mb-4">
                     @foreach($post->categories as $category)
                         <a href="{{ route('blog.category', $category->slug) }}"
-                           class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">
+                           class="px-3 py-1 bg-gray-500 rounded-full text-sm">
                             {{ $category->name }}
                         </a>
                     @endforeach
+                </div>
+            @endif
+
+            @if($post->featured_image)
+                <div class="rounded-xl overflow-hidden mb-8 aspect-video">
+                    <img src="{{ asset('storage/' . $post->featured_image) }}"
+                         alt="{{ $post->title }}"
+                         class="w-full h-full object-cover">
                 </div>
             @endif
         </header>

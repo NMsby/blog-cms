@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Exception;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -21,6 +22,33 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    const ROLES = [
+        'admin' => 'Administrator',
+        'editor' => 'Editor',
+        'author' => 'Author',
+    ];
+
+    protected $attributes = [
+        'role' => 'author' // Default role
+    ];
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (!$user->role) {
+                $user->role = 'author';
+            }
+
+            if (in_array($user->role, ['admin', 'editor']) &&
+                (!auth()->user() || !auth()->user()->isAdmin())) {
+                throw new Exception('Unauthorized role assignment.');
+            }
+        });
+    }
+
+
     protected $fillable = [
         'name',
         'email',

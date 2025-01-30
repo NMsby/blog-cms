@@ -21,7 +21,7 @@
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                         <h2 class="font-semibold"></h2>
                         @yield('content')
                     </div>
@@ -29,7 +29,7 @@
             @endif
 
             <!-- Page Content -->
-            <main class="py-12">
+            <main class="py-8">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     @include('layouts.partials.messages')
                     @yield('content')
