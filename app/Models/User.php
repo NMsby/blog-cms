@@ -28,6 +28,16 @@ class User extends Authenticatable implements MustVerifyEmail
         'author' => 'Author',
     ];
 
+    /**
+     * Default social links structure
+     */
+    const DEFAULT_SOCIAL_LINKS = [
+        'twitter' => null,
+        'facebook' => null,
+        'linkedin' => null,
+        'github' => null,
+    ];
+
     protected $attributes = [
         'role' => 'author' // Default role
     ];
@@ -59,7 +69,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'bio',
         'website',
         'social_links',
-        'last_login_at'
+        'last_login_at',
+        'notification_preferences',
     ];
 
     /**
@@ -81,8 +92,86 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
         'social_links' => 'array',
+        'notification_preferences' => 'array',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get formatted profile information
+     */
+    public function getProfileAttribute(): array
+    {
+        return [
+            'name' => $this->name,
+            'username' => $this->username,
+            'bio' => $this->bio,
+            'website' => $this->website,
+            'avatar_url' => $this->avatar_url,
+            'social_links' => $this->social_links ?? self::DEFAULT_SOCIAL_LINKS,
+            'post_count' => $this->posts()->count(),
+            'comment_count' => $this->comments()->count(),
+            'member_since' => $this->created_at->format('F Y'),
+            'last_active' => $this->last_login_at ? $this->last_login_at->diffForHumans() : 'Never',
+        ];
+    }
+
+    /**
+     * Get the user's avatar URL.
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
+        }
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+    }
+
+    /**
+     * Get default notification preferences
+     */
+    public function getDefaultNotificationPreferences(): array
+    {
+        return [
+            'email_notifications' => true,
+            'comment_notifications' => true,
+            'reply_notifications' => true,
+            'mention_notifications' => true
+        ];
+    }
+
+    /**
+     * Get notification preferences with defaults
+     */
+    public function getNotificationPreferencesAttribute($value): array
+    {
+        return array_merge(
+            $this->getDefaultNotificationPreferences(),
+            $value ? json_decode($value, true) : []
+        );
+    }
+
+    /**
+     * Get social links with defaults
+     */
+    public function getSocialLinksAttribute($value): array
+    {
+        return array_merge(
+            self::DEFAULT_SOCIAL_LINKS,
+            $value ? json_decode($value, true) : []
+        );
+    }
+
+    /**
+     * Check if user has completed their profile
+     */
+    public function hasCompletedProfile(): bool
+    {
+        return !empty($this->bio)
+            && !empty($this->avatar)
+            && !empty($this->website)
+            && !empty(array_filter($this->social_links));
+    }
+
 
     /**
      * Create a new factory instance for the model.
@@ -129,5 +218,21 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return in_array($this->role, $roles);
+    }
+
+    /**
+     * Get the route key name for Laravel's implicit model binding
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'username';
+    }
+
+    /**
+     * Get public profile URL
+     */
+    public function getProfileUrlAttribute(): string
+    {
+        return route('author.profile.show', $this->username);
     }
 }

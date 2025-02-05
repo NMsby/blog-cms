@@ -14,7 +14,7 @@
                     @auth
                         @switch(auth()->user()->role)
                             @case('admin')
-                                <x-nav-link :href="route('admin.')"
+                                <x-nav-link :href="route('admin.admin.dashboard')"
                                             :active="request()->routeIs('admin.dashboard')">
                                     {{ __('Admin Dashboard') }}
                                 </x-nav-link>
@@ -172,13 +172,28 @@
 
                         <x-slot name="content">
                             @php
-                                auth()->user()->role;
-                                $profileRoute = route('admin.profile');
+                                $role = auth()->user()->role;
+                                $profileRoute = match($role) {
+                                    'admin' => route('admin.profile'),
+                                    'editor' => route('editor.profile.edit'),
+                                    'author' => route('authorprofile.edit'),
+                                    default => route('profile.edit'),
+                                }
                             @endphp
 
                             <x-dropdown-link :href="$profileRoute">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
+
+                            @if($role === 'author')
+                                <x-dropdown-link>
+                                    {{ __('Statistics') }}
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('notifications.preferences')">
+                                    {{ __('Notification Settings') }}
+                                </x-dropdown-link>
+                            @endif
 
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -228,7 +243,7 @@
             @auth
                 @switch(auth()->user()->role)
                     @case('admin')
-                        <x-responsive-nav-link :href="route('admin.dashboard')"
+                        <x-responsive-nav-link :href="route('admin.admin.dashboard')"
                                                :active="request()->routeIs('admin.dashboard')">
                             {{ __('Dashboard') }}
                         </x-responsive-nav-link>

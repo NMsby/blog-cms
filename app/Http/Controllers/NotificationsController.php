@@ -105,11 +105,11 @@ class NotificationsController extends Controller
 
     public function getUnreadCount()
     {
-        $count = auth()->user()
-            ->unreadNotifications
-            ->count();
+        if (!request()->expectsJson()) {
+            return redirect()->route('home');
+        }
 
-        return response()->json(['count' => $count]);
+        return response()->json(['count' => auth()->user()->unreadNotifications->count()]);
     }
 
     public function show($id)

@@ -13,9 +13,9 @@ use App\Http\Controllers\Author\DashboardController as AuthorDashboardController
 use App\Http\Controllers\Author\PostController as AuthorPostController;
 use App\Http\Controllers\Author\CommentController as AuthorCommentController;
 use App\Http\Controllers\Author\MediaController as AuthorMediaController;
+use App\Http\Controllers\Author\ProfileController as AuthorProfileController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\NotificationsController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,12 +54,15 @@ Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->gr
     Route::post('/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('markAllAsRead');
     Route::delete('/{id}', [NotificationsController::class, 'destroy'])->name('destroy');
     Route::post('/clear-all', [NotificationsController::class, 'clearAll'])->name('clearAll');
-    Route::get('/count', [NotificationsController::class, 'getUnreadCount'])->name('count');
+    Route::get('/count', [NotificationsController::class, 'getUnreadCount'])->name('count')->middleware('ajax');
     Route::get('/{id}', [NotificationsController::class, 'show'])->name('show');
     Route::get('/preferences', [NotificationsController::class, 'preferences'])->name('preferences');
     Route::post('/preferences', [NotificationsController::class, 'updatePreferences'])->name('preferences.update');
     Route::get('/notifications/partial', [NotificationsController::class, 'getPartial'])->name('notifications.partial');
 });
+
+// Add this to redirect to home if accessed directly after login
+Route::redirect('/notifications/count', '/');
 
 // Admin routes
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
@@ -122,6 +125,12 @@ Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('
     Route::get('media/selector', [AuthorMediaController::class, 'selector'])->name('media.selector');
 
     //Profile
-    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
+        Route::get('/', [AuthorProfileController::class, 'edit'])->name('edit');
+        Route::put('/', [AuthorProfileController::class, 'update'])->name('update');
+        Route::delete('/avatar', [AuthorProfileController::class, 'removeAvatar'])->name('remove-avatar');
+        Route::get('/{user:username}', [AuthorProfileController::class, 'show'])->name('show');
+        Route::get('/completion', [AuthorProfileController::class, 'completion'])->name('completion');
+        Route::get('/statistics', [AuthorProfileController::class, 'statistics'])->name('statistics');
+    });
 });
