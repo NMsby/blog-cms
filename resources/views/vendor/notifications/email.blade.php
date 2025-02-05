@@ -12,7 +12,12 @@
     @endif
 
     {{-- Content --}}
-    {{ $content }}
+    @isset($introLines)
+        @foreach ($introLines as $line)
+            {{ $line }}
+
+        @endforeach
+    @endisset
 
     {{-- Action Button --}}
     @isset($actionText)
@@ -21,16 +26,19 @@
         </x-mail::button>
     @endisset
 
-    {{-- Subcopy --}}
-    @isset($actionText)
-        <x-slot:subcopy>
-            @lang(
-                "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-                'into your web browser:',
-                [
-                    'actionText' => $actionText,
-                ]
-            ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
-        </x-slot:subcopy>
+    {{-- Outro Lines --}}
+    @isset($outroLines)
+        @foreach ($outroLines as $line)
+            {{ $line }}
+        @endforeach
     @endisset
+
+    {{-- Salutation --}}
+    @if (! empty($salutation))
+        {{ $salutation }}
+    @else
+        @lang('Regards'),<br>
+        {{ config('app.name') }}
+    @endif
+</x-mail::message>
 </x-mail::message>

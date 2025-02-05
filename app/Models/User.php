@@ -51,9 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail
                 $user->role = 'author';
             }
 
-            if (in_array($user->role, ['admin', 'editor']) &&
-                (!auth()->user() || !auth()->user()->isAdmin())) {
-                throw new Exception('Unauthorized role assignment.');
+            if (!app()->runningInConsole()) {
+                if (in_array($user->role, ['admin', 'editor']) &&
+                    (!auth()->user() || !auth()->user()->isAdmin())) {
+                    throw new Exception('Unauthorized role assignment.');
+                }
             }
         });
     }

@@ -16,7 +16,7 @@ class AjaxRequestOnly
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->ajax()) {
-            return redirect('home');
+            return redirect('/');
         }
 
         return $next($request);

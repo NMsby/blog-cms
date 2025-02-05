@@ -47,7 +47,10 @@ class RegisteredUserController extends Controller
             'role' => 'author',
         ]);
 
+        // Send welcome notification to the new user
         $user->notify(new WelcomeAuthorNotification());
+
+        // Trigger email verification notification
         event(new Registered($user));
 
         Auth::login($user);
