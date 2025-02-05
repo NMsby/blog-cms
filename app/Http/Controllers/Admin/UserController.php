@@ -80,7 +80,7 @@ class UserController extends AdminController
             'username' => 'required|string|max:255|unique:users,username,' . $user->id . '|alpha_dash',
             'password' => ['nullable', Password::defaults()],
             'role' => 'required|in:admin,editor,author',
-            'avatar' => 'nullable|image|max:1024',
+            'avatar' => 'nullable|image|max:10240',
             'bio' => 'nullable|string',
             'website' => 'nullable|url',
             'social_links' => 'nullable|array'
@@ -148,7 +148,7 @@ class UserController extends AdminController
             'username' => 'required|string|max:255|unique:users,username,' . $user->id . '|alpha_dash',
             'current_password' => 'nullable|required_with:new_password|current_password',
             'new_password' => ['nullable', Password::defaults()],
-            'avatar' => 'nullable|image|max:1024',
+            'avatar' => 'nullable|image|max:10240',
             'bio' => 'nullable|string',
             'website' => 'nullable|url',
             'social_links' => 'nullable|array'

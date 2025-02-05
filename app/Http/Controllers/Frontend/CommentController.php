@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Notifications\CommentReplyNotification;
+use App\Notifications\NewCommentNotification;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -14,18 +16,27 @@ class CommentController extends Controller
         $validated = $request->validate([
             'content' => 'required|string',
             'parent_id' => 'nullable|exists:comments,id',
-            'guest_name' => 'required_without:user_id|string|max:255',
-            'guest_email' => 'required_without:user_id|email|max:255',
         ]);
 
-        $comment = new Comment($validated);
-        $comment->post_id = $post->id;
-        $comment->user_id = auth()->id();
-        $comment->status = auth()->check() ? 'approved' : 'pending';
-        $comment->ip_address = $request->ip();
-        $comment->user_agent = $request->userAgent();
-        $comment->save();
+        $comment = Comment::create([
+            'content' => $validated['content'],
+            'post_id' => $post->id,
+            'user_id' => auth()->id(),
+            'parent_id' => $validated['parent_id'] ?? null,
+            'status' => auth()->check() ? 'approved' : 'pending',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
 
-        return back()->with('success', 'Comment submitted successfully.');
+        // Send notifications
+        if ($comment->parent_id) {
+            // If this is a reply, notify the original commenter
+            $comment->parent->user?->notify(new CommentReplyNotification($comment));
+            return back()->with('success', 'Reply posted successfully.');
+        } else {
+            // If this is a new comment, notify the post author
+            $post->user->notify(new NewCommentNotification($comment));
+            return back()->with('success', 'Comment posted successfully.');
+        }
     }
 }

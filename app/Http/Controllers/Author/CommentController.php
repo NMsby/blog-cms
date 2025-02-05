@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Author;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Post;
+use App\Notifications\CommentReplyNotification;
+use App\Notifications\NewCommentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +31,7 @@ class CommentController extends Controller
         return view('author.comments.show', compact('comment'));
     }
 
-    public function reply(Request $request, Comment $comment)
+    public function reply(Request $request, Comment $comment, Post $post)
     {
         if ($comment->post->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
@@ -45,6 +48,17 @@ class CommentController extends Controller
             'content' => $validated['content'],
             'status' => 'approved',
         ]);
+
+        // Send notifications
+        if ($comment->status === 'approved') {
+            if ($comment->parent_id) {
+                // If this is a reply, notify the original commenter
+                $comment->parent->user?->notify(new CommentReplyNotification($comment));
+            } else {
+                // If this is a new comment, notify the post author
+                $post->user->notify(new NewCommentNotification($comment));
+            }
+        }
 
         return redirect()->back()
             ->with('success', 'Your reply has been added successfully.');

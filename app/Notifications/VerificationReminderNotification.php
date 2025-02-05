@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WelcomeAuthorNotification extends Notification implements ShouldQueue
+class VerificationReminderNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -35,12 +35,12 @@ class WelcomeAuthorNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Welcome to ' . config('app.name'))
-            ->greeting('Hello ' . $notifiable->name . '!')
-            ->line('Welcome to ' . config('app.name') . '! We\'re excited to have you as an author.')
-            ->line('Your account has been created successfully. You can now start creating and sharing your content.')
-            ->action('Visit Your Dashboard', url('/author/dashboard'))
-            ->line('Thank you for joining our community!');
+            ->subject('Reminder: Verify Your Email Address')
+            ->greeting('Hello ' . $notifiable->name)
+            ->line('This is a friendly reminder to verify your email address.')
+            ->line('You\'re almost ready to start using your author account.')
+            ->action('Verify Email Address', url('/verify-email'))
+            ->line('If you did not create an account, no further action is required.');
     }
 
     /**

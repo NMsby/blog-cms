@@ -28,7 +28,7 @@ class PostController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('authorposts.create', compact('categories', 'tags'));
+        return view('author.posts.create', compact('categories', 'tags'));
     }
 
     public function store(Request $request)

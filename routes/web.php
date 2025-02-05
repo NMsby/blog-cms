@@ -14,6 +14,7 @@ use App\Http\Controllers\Author\PostController as AuthorPostController;
 use App\Http\Controllers\Author\CommentController as AuthorCommentController;
 use App\Http\Controllers\Author\MediaController as AuthorMediaController;
 use App\Http\Controllers\Frontend\BlogController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,20 @@ Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name
 
 // Authentication routes
 require __DIR__.'/auth.php';
+
+// Notification routes
+Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [NotificationsController::class, 'index'])->name('index');
+    Route::post('/{id}/mark-as-read', [NotificationsController::class, 'markAsRead'])->name('markAsRead');
+    Route::post('/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('markAllAsRead');
+    Route::delete('/{id}', [NotificationsController::class, 'destroy'])->name('destroy');
+    Route::post('/clear-all', [NotificationsController::class, 'clearAll'])->name('clearAll');
+    Route::get('/count', [NotificationsController::class, 'getUnreadCount'])->name('count');
+    Route::get('/{id}', [NotificationsController::class, 'show'])->name('show');
+    Route::get('/preferences', [NotificationsController::class, 'preferences'])->name('preferences');
+    Route::post('/preferences', [NotificationsController::class, 'updatePreferences'])->name('preferences.update');
+    Route::get('/notifications/partial', [NotificationsController::class, 'getPartial'])->name('notifications.partial');
+});
 
 // Admin routes
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
