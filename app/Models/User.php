@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Exception;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -164,7 +166,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check if user has completed their profile
+     * Check if a user has completed their profile
      */
     public function hasCompletedProfile(): bool
     {
@@ -236,5 +238,29 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getProfileUrlAttribute(): string
     {
         return route('author.profile.show', $this->username);
+    }
+
+    /*
+     * Determine if the user can access the Filament Panel.
+     */
+    /**
+     * @throws Exception
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Allow access based on roles
+        return match ($panel->getId()) {
+            'admin' => $this->isAdmin(),
+            'editor' => $this->isEditor() || $this->isAdmin(),
+            default => false,
+        };
+    }
+
+    /*
+     * Get the filament avatar URL.
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
     }
 }

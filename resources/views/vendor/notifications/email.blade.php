@@ -41,4 +41,3 @@
         {{ config('app.name') }}
     @endif
 </x-mail::message>
-</x-mail::message>

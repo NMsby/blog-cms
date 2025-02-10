@@ -4,7 +4,7 @@
 
 @section('content')
     @if($featured_posts->count() > 0)
-        <section class="bg-gradient-to-b from-gray-900 to-gray-800 text-white py-16">
+        <section class="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl text-white py-6 px-4">
             <div class="max-w-7xl mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-8">Featured Stories</h2>
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

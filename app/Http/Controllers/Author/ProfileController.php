@@ -90,10 +90,7 @@ class ProfileController extends Controller
             'password' => $validated['password'] ?? $user->password,
         ]);
 
-        // Clear cache
-        Cache::tags(['user-profile', $user->id])->flush();
-
-        return redirect()->route('author.profile.edit')
+        return redirect()->route('authorprofile.edit')
             ->with('success', 'Profile updated successfully.');
     }
 
@@ -111,7 +108,7 @@ class ProfileController extends Controller
             Cache::tags(['user-profile', $user->id])->flush();
         }
 
-        return redirect()->route('author.profile.edit')
+        return redirect()->route('authorprofile.edit')
             ->with('success', 'Avatar removed successfully.');
     }
 
@@ -120,7 +117,7 @@ class ProfileController extends Controller
      */
     public function publicProfile(User $user)
     {
-        $cacheKey = "user-profile-{$user->id}";
+        $cacheKey = "user-profile-$user->id";
 
         $profile = Cache::tags(['user-profile', $user->id])->remember($cacheKey, 3600, function () use ($user) {
             return $user->load(['posts' => function ($query) {
@@ -161,7 +158,7 @@ class ProfileController extends Controller
     public function statistics()
     {
         $user = Auth::user();
-        $stats = Cache::tags(['user-stats', $user->id])->remember("user-stats-{$user->id}", 3600, function () use ($user) {
+        $stats = Cache::tags(['user-stats', $user->id])->remember("user-stats-$user->id", 3600, function () use ($user) {
             return [
                 'posts' => [
                     'total' => $user->posts()->count(),
