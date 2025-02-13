@@ -1,5 +1,4 @@
-{{-- resources/views/author/comments/index.blade.php --}}
-@extends('layouts.author')
+@extends('layouts.app')
 @section('title', 'Comments')
 @section('header', 'Comments on My Posts')
 

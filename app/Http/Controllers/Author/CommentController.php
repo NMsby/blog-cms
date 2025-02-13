@@ -55,7 +55,7 @@ class CommentController extends Controller
                 // If this is a reply, notify the original commenter
                 $comment->parent->user?->notify(new CommentReplyNotification($comment));
             } else {
-                // If this is a new comment, notify the post author
+                // If this is a new comment, notify the post-author
                 $post->user->notify(new NewCommentNotification($comment));
             }
         }

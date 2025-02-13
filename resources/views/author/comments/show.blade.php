@@ -1,4 +1,3 @@
-{{-- resources/views/author/comments/show.blade.php --}}
 @extends('layouts.app')
 @section('title', 'View Comment')
 @section('header', 'View Comment')

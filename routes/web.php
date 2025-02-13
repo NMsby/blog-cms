@@ -15,6 +15,8 @@ use App\Http\Controllers\Author\CommentController as AuthorCommentController;
 use App\Http\Controllers\Author\MediaController as AuthorMediaController;
 use App\Http\Controllers\Author\ProfileController as AuthorProfileController;
 use App\Http\Controllers\Frontend\BlogController;
+use App\Http\Controllers\Frontend\CommentController as FrontendCommentController;
+
 use App\Http\Controllers\NotificationsController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +44,16 @@ Route::name('blog.')->group(function () {
 });
 
 // Frontend comment routes
-Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::name('blog.')->middleware(['web', 'auth', 'throttle:6,1'])->group(function () {
+    Route::post('/blog/{post}/comments', [FrontendCommentController::class, 'store'])
+        ->name('comments.store');
+    Route::get('/comments/{comment}/edit', [App\Http\Controllers\Frontend\CommentController::class, 'edit'])
+        ->name('comments.edit');
+    Route::put('/comments/{comment}', [App\Http\Controllers\Frontend\CommentController::class, 'update'])
+        ->name('comments.update');
+    Route::delete('/comments/{comment}', [App\Http\Controllers\Frontend\CommentController::class, 'destroy'])
+        ->name('comments.destroy');
+});
 
 // Authentication routes
 require __DIR__.'/auth.php';

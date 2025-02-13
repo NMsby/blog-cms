@@ -13,6 +13,11 @@ class Comment extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Status constants
+    const STATUS_PENDING = 'pending';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_SPAM = 'spam';
+
     protected $fillable = [
         'post_id',
         'user_id',
@@ -50,8 +55,50 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'parent_id');
     }
 
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function isSpam(): bool
+    {
+        return $this->status === self::STATUS_SPAM;
+    }
+
+    public function approve(): void
+    {
+        $this->update(['status' => self::STATUS_APPROVED]);
+    }
+
+    public function markAsSpam(): void
+    {
+        $this->update(['status' => self::STATUS_SPAM]);
+    }
+
+    public function canEdit(User $user): bool
+    {
+        return $user->id === $this->user_id ||
+            $user->isAdmin() ||
+            ($this->post->user_id === $user->id);
+    }
+
     public function scopeApproved($query)
     {
-        return $query->where('status', 'approved');
+        return $query->where('status', self::STATUS_APPROVED);
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', self::STATUS_PENDING);
+    }
+
+    public function scopeSpam($query)
+    {
+        return $query->where('status', self::STATUS_SPAM);
     }
 }

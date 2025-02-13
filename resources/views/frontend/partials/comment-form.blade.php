@@ -1,5 +1,5 @@
 @auth
-    <form action="{{ route('comments.store', $post) }}" method="POST" class="bg-white rounded-lg p-6 shadow">
+    <form action="{{ route('blog.comments.store', $post) }}" method="POST" class="bg-white rounded-lg p-6 shadow">
         @csrf
         <div class="mb-4">
             <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Your Comment</label>
