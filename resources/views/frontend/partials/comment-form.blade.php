@@ -1,6 +1,20 @@
 @auth
     <form action="{{ route('blog.comments.store', $post) }}" method="POST" class="bg-white rounded-lg p-6 shadow">
         @csrf
+
+        {{-- Status Message --}}
+        @if(session('success'))
+            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="mb-4">
             <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Your Comment</label>
             <textarea name="content" id="content" rows="4" required

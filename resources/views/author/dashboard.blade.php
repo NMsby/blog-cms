@@ -86,7 +86,7 @@
                         <div class="text-sm">
                             <span class="font-medium">{{ $comment->user ? $comment->user->name : $comment->guest_name }}</span>
                             on
-                            <a href="{{ route('admin.posts.edit', $comment->post) }}" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ route('author.post.edit', $comment->post) }}" class="text-blue-600 hover:text-blue-800">
                                 {{ $comment->post->title }}
                             </a>
                         </div>

@@ -75,7 +75,9 @@
 
         @if($post->comments_enabled)
             <section class="border-t border-gray-200 pt-8" x-data="{ showCommentForm: false }">
-                <h2 class="text-2xl font-bold mb-8">Comments ({{ $post->comments->count() }})</h2>
+                <h2 class="text-2xl font-bold mb-8">
+                    Comments (<span class="comment-count">{{ $post->comments->count() }}</span>)
+                </h2>
 
                 <button @click="showCommentForm = !showCommentForm"
                         class="mb-6 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
@@ -86,9 +88,11 @@
                     @include('frontend.partials.comment-form')
                 </div>
 
-                <div class="space-y-8">
-                    @foreach($post->comments->whereNull('parent_id') as $comment)
-                        @include('frontend.partials.comment', ['comment' => $comment])
+                <div class="comments-container space-y-8">
+                    @foreach($post->comments->where('status', App\Models\Comment::STATUS_APPROVED)->whereNull('parent_id') as $comment)
+                        <div id="comment-{{ $comment->id }}" class="comment">
+                            @include('frontend.partials.comment', ['comment' => $comment])
+                        </div>
                     @endforeach
                 </div>
             </section>

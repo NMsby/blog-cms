@@ -18,7 +18,11 @@
             </a>
 
             <a href="{{ route('admin.comments.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.comments.*') ? 'bg-gray-900' : 'hover:bg-gray-700' }}">
-                Comments
+                Comments @if($pendingCommentCount = \App\Models\Comment::where('status', 'pending')->count())
+                    <span class="ml-2 px-2 py-0.5 bg-red-500 text-white rounded-full text-xs">
+                        {{ $pendingCommentCount }}
+                    </span>
+                @endif
             </a>
 
             <a href="{{ route('admin.media.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.media.*') ? 'bg-gray-900' : 'hover:bg-gray-700' }}">

@@ -59,6 +59,25 @@ class CommentController extends AdminController
     }
 
     /**
+     * Approve the specified comment.
+     */
+    public function approve(Comment $comment)
+    {
+        $comment->update(['status' => Comment::STATUS_APPROVED]);
+
+        return back()->with('success', 'Comment approved successfully.');
+    }
+
+    /*
+     * Mark the specified comment as spam.
+     */
+    public function markAsSpam(Comment $comment)
+    {
+        $comment->update(['status' => Comment::STATUS_SPAM]);
+        return back()->with('success', 'Comment marked as spam successfully.');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Comment $comment)
@@ -76,6 +95,7 @@ class CommentController extends AdminController
     {
         $validated = $request->validate([
             'comment_ids' => 'required|array',
+            'comment_ids.*' => 'exists:comments,id',
             'action' => 'required|in:approve,mark_as_spam,delete'
         ]);
 
@@ -97,8 +117,7 @@ class CommentController extends AdminController
                 break;
         }
 
-        return redirect()->route('admin.comments.index')
-            ->with('success', $message);
+        return back()->with('success', $message);
     }
 
     /**
@@ -113,4 +132,6 @@ class CommentController extends AdminController
 
         return view('admin.comments.pending', compact('comments'));
     }
+
+
 }

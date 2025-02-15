@@ -12,6 +12,17 @@
                 <span class="font-semibold">{{ $comment->user ? $comment->user->name : $comment->guest_name }}</span>
                 <span class="text-sm text-gray-500 ml-2">{{ $comment->created_at->diffForHumans() }}</span>
             </div>
+
+            @if($comment->status === 'pending')
+                <span class="ml-2 px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                    Pending Approval
+                </span>
+            @elseif($comment->status === 'approved')
+                <span class="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                    Approved
+                </span>
+            @endif
+
             <div class="text-gray-700">{{ $comment->content }}</div>
 
             @auth
