@@ -45,6 +45,7 @@
         </div>
 
         <!-- Scripts -->
+        <script src="https://cdn.tiny.cloud/1/lcugueg1lhtpmnv56zjf9shxtcrsvol11yszc1kga1o04cee/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
         @stack('scripts')
     </body>
 </html>
