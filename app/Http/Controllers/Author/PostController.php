@@ -25,8 +25,8 @@ class PostController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
-        $tags = Tag::all();
+        $categories = Category::orderBy('name')->get();
+        $tags = Tag::orderBy('name')->get();
 
         return view('author.posts.create', compact('categories', 'tags'));
     }

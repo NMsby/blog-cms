@@ -25,30 +25,152 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div class="mb-4">
-                    <x-input-label for="category_ids" value="Categories" />
-                    <select id="category_ids" name="category_ids[]" multiple class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" size="4">
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ in_array($category->id, old('category_ids', [])) ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <p class="mt-1 text-sm text-gray-500">Hold Ctrl (Windows) or Command (Mac) to select multiple categories</p>
-                    <x-input-error :messages="$errors->get('category_ids')" class="mt-2" />
+                <!-- Categories Selection -->
+                <div class="mb-4" x-data="{
+                    search: '',
+                    selectedCategories: [],
+                    categories: [],
+                    showDropdown: false,
+                    init() {
+                        this.categories = JSON.parse(this.$refs.categoriesData.value);
+                        this.selectedCategories = JSON.parse(this.$refs.selectedCategoriesData.value);
+                    },
+                    toggleCategory(id) {
+                        const index = this.selectedCategories.indexOf(id);
+                        if (index === -1) {
+                            this.selectedCategories.push(id);
+                        } else {
+                            this.selectedCategories.splice(index, 1);
+                        }
+                    },
+                    get filteredCategories() {
+                        if (!this.search) return this.categories;
+                        return this.categories.filter(category =>
+                            category.name.toLowerCase().includes(this.search.toLowerCase())
+                        );
+                    }
+                }">
+                    <input type="hidden" x-ref="categoriesData" :value='@json($categories)'>
+                    <input type="hidden" x-ref="selectedCategoriesData"
+                           :value='@json(isset($post) ? old("category_ids", $post->categories->pluck("id")->toArray()) : old("category_ids", []))'>
+
+                    <x-input-label for="category_search" value="Categories" />
+                    <div class="relative">
+                        <input type="text"
+                               id="category_search"
+                               x-model="search"
+                               @focus="showDropdown = true"
+                               @click.away="showDropdown = false"
+                               placeholder="Search categories..."
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mb-2">
+
+                        <!-- Dropdown for filtered categories -->
+                        <div x-show="showDropdown"
+                             class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto">
+                            <template x-for="category in filteredCategories" :key="category.id">
+                                <div class="p-2 hover:bg-gray-50 cursor-pointer flex items-center space-x-2"
+                                     @click="toggleCategory(category.id); search = ''">
+                                    <input type="checkbox"
+                                           :checked="selectedCategories.includes(category.id)"
+                                           :id="'category-' + category.id"
+                                           name="category_ids[]"
+                                           :value="category.id"
+                                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <label :for="'category-' + category.id"
+                                           x-text="category.name"
+                                           class="flex-grow cursor-pointer"></label>
+                                </div>
+                            </template>
+                            <div x-show="filteredCategories.length === 0"
+                                 class="p-2 text-gray-500 text-sm">
+                                No categories found
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Categories -->
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <template x-for="id in selectedCategories" :key="id">
+                            <div class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full text-sm flex items-center">
+                                <span x-text="categories.find(c => c.id === id).name"></span>
+                                <button type="button" @click="toggleCategory(id)" class="ml-1 text-indigo-500 hover:text-indigo-700">×</button>
+                            </div>
+                        </template>
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <x-input-label for="tag_ids" value="Tags" />
-                    <select id="tag_ids" name="tag_ids[]" multiple class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" size="4">
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tag_ids', [])) ? 'selected' : '' }}>
-                                {{ $tag->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <p class="mt-1 text-sm text-gray-500">Hold Ctrl (Windows) or Command (Mac) to select multiple tags</p>
-                    <x-input-error :messages="$errors->get('tag_ids')" class="mt-2" />
+                <!-- Tags Selection -->
+                <div class="mb-4" x-data="{
+                    search: '',
+                    selectedTags: [],
+                    tags: [],
+                    showDropdown: false,
+                    init() {
+                        this.tags = JSON.parse(this.$refs.tagsData.value);
+                        this.selectedTags = JSON.parse(this.$refs.selectedTagsData.value);
+                    },
+                    toggleTag(id) {
+                        const index = this.selectedTags.indexOf(id);
+                        if (index === -1) {
+                            this.selectedTags.push(id);
+                        } else {
+                            this.selectedTags.splice(index, 1);
+                        }
+                    },
+                    get filteredTags() {
+                        if (!this.search) return this.tags;
+                        return this.tags.filter(tag =>
+                            tag.name.toLowerCase().includes(this.search.toLowerCase())
+                        );
+                    }
+                }">
+                    <input type="hidden" x-ref="tagsData" :value='@json($tags)'>
+                    <input type="hidden" x-ref="selectedTagsData"
+                           :value='@json(isset($post) ? old("tag_ids", $post->tags->pluck("id")->toArray()) : old("tag_ids", []))'>
+
+                    <x-input-label for="tag_search" value="Tags" />
+                    <div class="relative">
+                        <input type="text"
+                               id="tag_search"
+                               x-model="search"
+                               @focus="showDropdown = true"
+                               @click.away="showDropdown = false"
+                               placeholder="Search tags..."
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mb-2">
+
+                        <!-- Dropdown for filtered tags -->
+                        <div x-show="showDropdown"
+                             class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto">
+                            <template x-for="tag in filteredTags" :key="tag.id">
+                                <div class="p-2 hover:bg-gray-50 cursor-pointer flex items-center space-x-2"
+                                     @click="toggleTag(tag.id); search = ''">
+                                    <input type="checkbox"
+                                           :checked="selectedTags.includes(tag.id)"
+                                           :id="'tag-' + tag.id"
+                                           name="tag_ids[]"
+                                           :value="tag.id"
+                                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <label :for="'tag-' + tag.id"
+                                           x-text="tag.name"
+                                           class="flex-grow cursor-pointer"></label>
+                                </div>
+                            </template>
+                            <div x-show="filteredTags.length === 0"
+                                 class="p-2 text-gray-500 text-sm">
+                                No tags found
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Tags -->
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <template x-for="id in selectedTags" :key="id">
+                            <div class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full text-sm flex items-center">
+                                <span x-text="tags.find(t => t.id === id).name"></span>
+                                <button type="button" @click="toggleTag(id)" class="ml-1 text-indigo-500 hover:text-indigo-700">×</button>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </div>
 
