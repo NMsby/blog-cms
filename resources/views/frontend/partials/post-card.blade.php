@@ -17,7 +17,7 @@
                 </a>
             </h2>
             <div class="flex items-center text-sm text-gray-500 mt-2">
-                <span>{{ $post->user->name }}</span>
+                <a href="{{ route('blog.author', $post->user->username) }}" class="hover:text-blue-600">{{  $post->user->name }}</a>
                 <span class="mx-2">&middot;</span>
                 <span>{{ $post->created_at->format('M d, Y') }}</span>
                 <span class="mx-2">&middot;</span>

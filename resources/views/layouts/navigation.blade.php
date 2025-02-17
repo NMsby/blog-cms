@@ -68,7 +68,7 @@
                                     {{ __('My Posts') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('blog.index')" :active="request()->routeIs('blog.*')">
-                                    {{ __('Blogs') }}
+                                    {{ __('Blog') }}
                                 </x-nav-link>
                                 @break
 
@@ -186,7 +186,7 @@
                             </x-dropdown-link>
 
                             @if($role === 'author')
-                                <x-dropdown-link>
+                                <x-dropdown-link :href="route('blog.author', auth()->user()->username)">
                                     {{ __('Statistics') }}
                                 </x-dropdown-link>
 
@@ -315,21 +315,33 @@
     </div>
 
     <!-- Search Modal -->
-    <div x-data="{ query: '', suggestions: [] }"
+    <div x-data="{ query: '', suggestions: { posts: [], authors: [] } }"
          x-show="searchOpen"
          x-transition
-         class="fixed inset-0 z-50 overflow-y-auto"
+         @keydown.escape.window="searchOpen = false"
+         class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm"
          style="display: none;">
-        <div class="min-h-screen px-4 text-center">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                 @click="searchOpen = false"></div>
+        <!-- Backdrop - clicking this will close the modal -->
+        <div class="fixed inset-0" @click="searchOpen = false"></div>
 
-            <div class="inline-block w-full max-w-2xl my-8 p-6 text-left align-middle bg-white shadow-xl rounded-lg">
-                <form action="{{ route('blog.index') }}" method="GET">
+        <div class="min-h-screen px-4 text-center">
+            <!-- Modal Content -->
+            <div class="inline-block w-full max-w-2xl my-8 p-6 text-left align-middle bg-white shadow-xl rounded-lg relative"
+                 @click.stop> <!-- Stop click propagation on the modal content -->
+                <!-- Close button -->
+                <button @click="searchOpen = false"
+                        class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+
+                <form action="{{ route('blog.index') }}" method="GET"
+                      @submit="searchOpen = false">
                     <input type="text"
                            name="search"
                            x-model="query"
-                           @input.debounce.300ms="fetch('blog/search/suggestions?q=' + query)
+                           @input.debounce.300ms="fetch(`/blog/search/suggestions?q=${query}`)
                             .then(res => res.json())
                             .then(data => suggestions = data)"
                            placeholder="Search posts..."

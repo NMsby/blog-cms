@@ -7,13 +7,24 @@
             <h1 class="text-4xl font-bold mb-4">{{ $post->title }}</h1>
 
             <div class="flex flex-wrap items-center gap-4 text-gray-600 mb-6">
-                <div class="flex items-center">
-                    @if($post->user->avatar)
-                        <img src="{{ asset('storage/' . $post->user->avatar) }}"
-                             class="w-10 h-10 rounded-full mr-3" alt="">
-                    @endif
-                    <span>{{ $post->user->name }}</span>
-                </div>
+                <a href="{{ route('blog.author', $post->user->username) }}"
+                   class="flex items-center group hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors">
+                    <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                        @if($post->user->avatar)
+                            <img src="{{ asset('storage/' . $post->user->avatar) }}"
+                                 alt="{{ $post->user->name }}"
+                                 class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-gray-500 text-xl">
+                                {{ substr($post->user->name, 0, 1) }}
+                            </div>
+                        @endif
+                    </div>
+                    <div class="ml-3">
+                        <div class="font-medium group-hover:text-blue-600 transition-colors">{{ $post->user->name }}</div>
+                        <div class="text-sm text-gray-500">{{ '@' . $post->user->username }}</div>
+                    </div>
+                </a>
                 <span>&middot;</span>
                 <time datetime="{{ $post->published_at ? $post->published_at->format('Y-m-d') : '' }}">
                     {{ $post->published_at ? $post->published_at->format('M d, Y') : 'Draft' }}

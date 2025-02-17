@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -29,11 +30,21 @@ class BlogController extends Controller
             });
         }
 
+        if ($request->has('author')) {
+            $query->whereHas('user', function($q) use ($request) {
+                $q->where('username', $request->author);
+            });
+        }
+
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%$search%")
-                    ->orWhere('content', 'like', "%$search%");
+                    ->orWhere('content', 'like', "%$search%")
+                    ->orWhereHas('user', function($q) use ($search) {
+                        $q->where('name', 'like', "%$search%")
+                            ->orWhere('username', 'like', "%$search%");
+                    });
             });
         }
 
@@ -56,10 +67,19 @@ class BlogController extends Controller
             ->take(15)
             ->get();
 
+        $popular_authors = User::withCount(['posts' => function($query) {
+            $query->published();
+        }])
+            ->having('posts_count', '>', 0)
+            ->orderByDesc('posts_count')
+            ->take(10)
+            ->get();
+
         return view('frontend.blog.index', compact(
             'posts',
             'categories',
-            'popular_tags'
+            'popular_tags',
+            'popular_authors'
         ));
     }
 
@@ -92,6 +112,17 @@ class BlogController extends Controller
         return view('frontend.blog.show', compact('post', 'related_posts'));
     }
 
+    public function author(User $user)
+    {
+        $posts = Post::with(['categories', 'tags'])
+            ->published()
+            ->where('user_id', $user->id)
+            ->latest('published_at')
+            ->paginate(12);
+
+        return view('frontend.blog.author', compact('user', 'posts'));
+    }
+
     public function category(Category $category)
     {
         $posts = Post::with(['user', 'categories'])
@@ -121,14 +152,50 @@ class BlogController extends Controller
     public function searchSuggestions(Request $request)
     {
         if (!$request->has('q') || strlen($request->q) < 2) {
-            return response()->json();
+            return response()->json([
+                'posts' => [],
+                'authors' => []
+            ]);
         }
 
-        $posts = Post::published()
-            ->where('title', 'like', "%$request->q%")
-            ->take(5)
-            ->get(['id', 'title', 'slug']);
+        $query = $request->q;
 
-        return response()->json($posts);
+        $posts = Post::published()
+            ->where('title', 'like', "%$query%")
+            ->take(5)
+            ->get()
+        ->map(function($post) {
+            return [
+                'id' => $post->id,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'author' => $post->user->name,
+            ];
+        });
+
+        $authors = User::where(function($q) use ($query) {
+            $q->where('name', 'like', "%$query%")
+                ->orWhere('username', 'like', "%$query%");
+        })
+            ->withCount(['posts' => function($q) {
+                $q->published();
+            }])
+            ->having('posts_count', '>', 0)
+            ->take(3)
+            ->get()
+            ->map(function($author) {
+                return [
+                    'id' => $author->id,
+                    'name' => $author->name,
+                    'username' => $author->username,
+                    'avatar' => $author->avatar ? asset('storage/' . $author->avatar) : null,
+                    'posts_count' => $author->posts_count
+                ];
+            });
+
+        return response()->json([
+            'posts' => $posts,
+            'authors' => $authors
+        ]);
     }
 }

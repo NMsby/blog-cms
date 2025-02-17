@@ -41,6 +41,7 @@ Route::name('blog.')->group(function () {
     Route::get('/category/{category:slug}', [BlogController::class, 'category'])->name('category');
     Route::get('/tag/{tag:slug}', [BlogController::class, 'tag'])->name('tag');
     Route::get('/search/suggestions', [BlogController::class, 'searchSuggestions'])->name('blog.search.suggestions');
+    Route::get('/author/{user:username}', [BlogController::class, 'author'])->name('author');
 });
 
 // Frontend comment routes

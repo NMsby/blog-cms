@@ -19,7 +19,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        return view('author.profile.edit', compact('user'));
+        return view('authorprofile.edit', compact('user'));
     }
 
     /**
@@ -93,7 +93,7 @@ class ProfileController extends Controller
         // Clear cache
         Cache::tags(['user-profile', $user->id])->flush();
 
-        return redirect()->route('author.profile.edit')
+        return redirect()->route('authorprofile.edit')
             ->with('success', 'Profile updated successfully.');
     }
 
@@ -111,7 +111,7 @@ class ProfileController extends Controller
             Cache::tags(['user-profile', $user->id])->flush();
         }
 
-        return redirect()->route('author.profile.edit')
+        return redirect()->route('authorprofile.edit')
             ->with('success', 'Avatar removed successfully.');
     }
 
@@ -217,7 +217,7 @@ class ProfileController extends Controller
             'notification_preferences' => $validated['preferences']
         ]);
 
-        return redirect()->route('author.profile.edit')
+        return redirect()->route('authorprofile.edit')
             ->with('success', 'Notification preferences updated successfully.');
     }
 
