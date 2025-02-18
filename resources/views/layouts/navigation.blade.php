@@ -55,16 +55,16 @@
                                 @break
 
                             @case('author')
-                                <x-nav-link :href="route('authorauthor.dashboard')"
+                                <x-nav-link :href="route('author.dashboard')"
                                             :active="request()->routeIs('author.dashboard')">
                                     {{ __('Author Dashboard') }}
                                 </x-nav-link>
-                                <x-nav-link :href="route('authorposts.create')"
+                                <x-nav-link :href="route('author.posts.create')"
                                             :active="request()->routeIs('author.posts.create')">
                                     {{ __('Create Post') }}
                                 </x-nav-link>
-                                <x-nav-link :href="route('authorposts.index')"
-                                            :active="request()->routeIs('author.posts.*')">
+                                <x-nav-link :href="route('author.posts.index')"
+                                            :active="request()->routeIs('author.posts.index')">
                                     {{ __('My Posts') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('blog.index')" :active="request()->routeIs('blog.*')">
@@ -176,7 +176,7 @@
                                 $profileRoute = match($role) {
                                     'admin' => route('admin.profile'),
                                     'editor' => route('editor.profile.edit'),
-                                    'author' => route('authorprofile.edit'),
+                                    'author' => route('author.profile.edit'),
                                     default => route('profile.edit'),
                                 }
                             @endphp
@@ -274,22 +274,22 @@
                                                :active="request()->routeIs('admin.posts.*')">
                             {{ __('Posts') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('admin.comments.index')"
+                        <x-responsive-nav-link :href="route('author.comments.index')"
                                                :active="request()->routeIs('admin.comments.*')">
                             {{ __('Comments') }}
                         </x-responsive-nav-link>
                         @break
 
                     @case('author')
-                        <x-responsive-nav-link :href="route('authorauthor.dashboard')"
+                        <x-responsive-nav-link :href="route('author.dashboard')"
                                                :active="request()->routeIs('author.dashboard')">
                             {{ __('Dashboard') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('admin.posts.create')"
+                        <x-responsive-nav-link :href="route('author.posts.create')"
                                                :active="request()->routeIs('admin.posts.create')">
                             {{ __('Create Post') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('admin.posts.index')"
+                        <x-responsive-nav-link :href="route('author.posts.index')"
                                                :active="request()->routeIs('admin.posts.*')">
                             {{ __('My Posts') }}
                         </x-responsive-nav-link>

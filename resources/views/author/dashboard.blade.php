@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <a href="{{ route('authorposts.create') }}" class="text-blue-600 hover:text-blue-800 text-sm">
+                <a href="{{ route('author.posts.create') }}" class="text-blue-600 hover:text-blue-800 text-sm">
                     + Create New Post
                 </a>
             </div>
@@ -49,7 +49,7 @@
         <div class="bg-white p-6 rounded-lg shadow">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-semibold text-lg">Your Recent Posts</h3>
-                <a href="{{ route('authorposts.index') }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
+                <a href="{{ route('author.posts.index') }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
             </div>
             <div class="divide-y">
                 @forelse($recent_posts as $post)

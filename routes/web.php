@@ -31,6 +31,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Broadcast route
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
 // Guest routes
 Route::get('/', [App\Http\Controllers\Frontend\HomeController::class, 'index'])->name('home');
 
@@ -60,7 +63,7 @@ Route::name('blog.')->middleware(['web', 'auth', 'throttle:6,1'])->group(functio
 require __DIR__.'/auth.php';
 
 // Notification routes
-Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:author'])->prefix('notifications')->name('notifications.')->group(function () {
     Route::get('/', [NotificationsController::class, 'index'])->name('index');
     Route::post('/{id}/mark-as-read', [NotificationsController::class, 'markAsRead'])->name('markAsRead');
     Route::post('/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('markAllAsRead');
@@ -119,14 +122,20 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('upload/image', [UploadController::class, 'imageUpload'])->name('upload.image');
 });
 
+Route::get('/test-author-posts', [AuthorPostController::class, 'index'])->name('test.posts.index');
 
 // Author routes
-Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('author')->group(function () {
+Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('author.')->group(function () {
     // Dashboard
-    Route::get('/', [AuthorDashboardController::class, 'index'])->name('author.dashboard');
+    Route::get('/', [AuthorDashboardController::class, 'index'])->name('dashboard');
 
-    //Posts
-    Route::resource('posts', AuthorPostController::class)->except(['destroy']);
+    //Post Routes
+    Route::get('/posts', [AuthorPostController::class, 'index'])->name('posts.index');
+    Route::get('/posts/create', [AuthorPostController::class, 'create'])->name('posts.create');
+    Route::post('/posts', [AuthorPostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/{post}', [AuthorPostController::class, 'show'])->name('posts.show');
+    Route::get('/posts/{post}/edit', [AuthorPostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [AuthorPostController::class, 'update'])->name('posts.update');
 
     //Comments
     Route::resource('comments', AuthorCommentController::class)->only(['index', 'show']);

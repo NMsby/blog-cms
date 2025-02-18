@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -335,5 +336,11 @@ class User extends Authenticatable implements MustVerifyEmail
             'member_since' => $this->created_at->format('F Y'),
             'last_posted' => $publishedPosts->latest('published_at')->first()?->published_at,
         ];
+    }
+
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        \Log::info('Route binding attempt:', ['value' => $value, 'field' => $field]);
+        return parent::resolveRouteBinding($value, $field);
     }
 }

@@ -3,7 +3,7 @@
 @section('header', 'Create Post')
 
 @section('content')
-    <form action="{{ route('authorposts.store') }}" method="POST" enctype="multipart/form-data" class="max-w-4xl">
+    <form action="{{ route('author.posts.store') }}" method="POST" enctype="multipart/form-data" class="max-w-4xl">
         @csrf
         <div class="bg-white shadow-sm rounded-lg p-6">
             <div class="mb-4">

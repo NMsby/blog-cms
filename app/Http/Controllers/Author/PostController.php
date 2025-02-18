@@ -60,7 +60,7 @@ class PostController extends Controller
             $post->tags()->sync($request->tag_ids);
         }
 
-        return redirect()->route('authorposts.index')
+        return redirect()->route('author.posts.index')
             ->with('success', 'Post created successfully.');
     }
 
@@ -108,7 +108,7 @@ class PostController extends Controller
         $post->categories()->sync($request->category_ids);
         $post->tags()->sync($request->tag_ids ?? []);
 
-        return redirect()->route('authorposts.index')
+        return redirect()->route('author.posts.index')
             ->with('success', 'Post updated successfully.');
     }
 }
