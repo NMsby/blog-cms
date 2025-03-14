@@ -8,7 +8,7 @@
             <div class="p-6">
                 <h2 class="text-2xl font-bold mb-6">Edit Profile</h2>
 
-                <form action="{{ route('authorprofile.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('author.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -148,7 +148,7 @@
                 </form>
 
                 <!-- Hidden form for avatar removal -->
-                <form id="remove-avatar-form" action="{{ route('authorprofile.remove-avatar') }}" method="POST" class="hidden">
+                <form id="remove-avatar-form" action="{{ route('author.profile.remove-avatar') }}" method="POST" class="hidden">
                     @csrf
                     @method('DELETE')
                 </form>

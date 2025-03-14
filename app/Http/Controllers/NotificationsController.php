@@ -123,7 +123,7 @@ class NotificationsController extends Controller
             $notification->markAsRead();
         }
 
-        // Redirect based on notification type
+        // Redirect based on a notification type
         return match ($notification->type) {
             NewCommentNotification::class => redirect()->route('blog.show', [
                 'post' => $notification->data['post_id'],
@@ -139,7 +139,8 @@ class NotificationsController extends Controller
 
     public function preferences()
     {
-        $preferences = auth()->user()->notification_preferences ?? [
+        $user = auth()->user();
+        $preferences = $user->notification_preferences ?? [
             'email_notifications' => true,
             'web_notifications' => true,
             'comment_notifications' => true,

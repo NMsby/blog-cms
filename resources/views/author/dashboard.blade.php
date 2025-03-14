@@ -56,7 +56,7 @@
                     <div class="py-3">
                         <div class="flex justify-between items-start">
                             <div>
-                                <a href="{{ route('authorposts.edit', $post) }}" class="hover:text-blue-600 font-medium">
+                                <a href="{{ route('author.posts.edit', $post) }}" class="hover:text-blue-600 font-medium">
                                     {{ $post->title }}
                                 </a>
                                 <div class="text-sm text-gray-500">

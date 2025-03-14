@@ -239,7 +239,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return route('author.profile.show', $this->username);
     }
 
-    public function getCategoryDistributionData()
+    public function getCategoryDistributionData(): array
     {
         $categories = Category::whereHas('posts', function($query) {
             $query->where('user_id', $this->id)->published();
