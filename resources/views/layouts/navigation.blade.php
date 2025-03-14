@@ -16,7 +16,7 @@
                             @case('admin')
                                 <x-nav-link :href="route('admin.admin.dashboard')"
                                             :active="request()->routeIs('admin.dashboard')">
-                                    {{ __('Admin Dashboard') }}
+                                    {{ __('Dashboard') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('admin.posts.index')"
                                             :active="request()->routeIs('admin.posts.*')">
@@ -39,7 +39,7 @@
                             @case('editor')
                                 <x-nav-link :href="route('editor.dashboard')"
                                             :active="request()->routeIs('editor.dashboard')">
-                                    {{ __('Editor Dashboard') }}
+                                    {{ __('Dashboard') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('admin.posts.index')"
                                             :active="request()->routeIs('admin.posts.*')">
@@ -57,7 +57,7 @@
                             @case('author')
                                 <x-nav-link :href="route('author.dashboard')"
                                             :active="request()->routeIs('author.dashboard')">
-                                    {{ __('Author Dashboard') }}
+                                    {{ __('Dashboard') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('author.posts.create')"
                                             :active="request()->routeIs('author.posts.create')">
