@@ -19,7 +19,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        return view('authorprofile.edit', compact('user'));
+        return view('author.profile.edit', compact('user'));
     }
 
     /**
@@ -217,7 +217,7 @@ class ProfileController extends Controller
             'notification_preferences' => $validated['preferences']
         ]);
 
-        return redirect()->route('authorprofile.edit')
+        return redirect()->route('author.profile.edit')
             ->with('success', 'Notification preferences updated successfully.');
     }
 

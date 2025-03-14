@@ -37,16 +37,6 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 // Guest routes
 Route::get('/', [App\Http\Controllers\Frontend\HomeController::class, 'index'])->name('home');
 
-// Blog routes
-Route::name('blog.')->group(function () {
-    Route::get('/blog', [BlogController::class, 'index'])->name('index');
-    Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('show');
-    Route::get('/category/{category:slug}', [BlogController::class, 'category'])->name('category');
-    Route::get('/tag/{tag:slug}', [BlogController::class, 'tag'])->name('tag');
-    Route::get('/search/suggestions', [BlogController::class, 'searchSuggestions'])->name('blog.search.suggestions');
-    Route::get('/author/{user:username}', [BlogController::class, 'author'])->name('author');
-});
-
 // Frontend comment routes
 Route::name('blog.')->middleware(['web', 'auth', 'throttle:6,1'])->group(function () {
     Route::post('/blog/{post}/comments', [FrontendCommentController::class, 'store'])
@@ -63,7 +53,7 @@ Route::name('blog.')->middleware(['web', 'auth', 'throttle:6,1'])->group(functio
 require __DIR__.'/auth.php';
 
 // Notification routes
-Route::middleware(['auth', 'verified', 'role:author'])->prefix('notifications')->name('notifications.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('notifications')->name('notifications.')->group(function () {
     Route::get('/', [NotificationsController::class, 'index'])->name('index');
     Route::post('/{id}/mark-as-read', [NotificationsController::class, 'markAsRead'])->name('markAsRead');
     Route::post('/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('markAllAsRead');
@@ -71,8 +61,8 @@ Route::middleware(['auth', 'verified', 'role:author'])->prefix('notifications')-
     Route::post('/clear-all', [NotificationsController::class, 'clearAll'])->name('clearAll');
     Route::get('/count', [NotificationsController::class, 'getUnreadCount'])->name('count')->middleware('ajax');
     Route::get('/{id}', [NotificationsController::class, 'show'])->name('show');
-    Route::get('/preferences', [NotificationsController::class, 'preferences'])->name('preferences');
-    Route::post('/preferences', [NotificationsController::class, 'updatePreferences'])->name('preferences.update');
+    Route::get('preferences', [NotificationsController::class, 'preferences'])->name('preferences');
+    Route::post('preferences', [NotificationsController::class, 'updatePreferences'])->name('preferences.update');
     Route::get('/notifications/partial', [NotificationsController::class, 'getPartial'])->name('notifications.partial');
 });
 
@@ -127,7 +117,7 @@ Route::get('/test-author-posts', [AuthorPostController::class, 'index'])->name('
 // Author routes
 Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('author.')->group(function () {
     // Dashboard
-    Route::get('/', [AuthorDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AuthorDashboardController::class, 'index'])->name('dashboard');
 
     //Post Routes
     Route::get('/posts', [AuthorPostController::class, 'index'])->name('posts.index');
@@ -146,12 +136,17 @@ Route::middleware(['auth', 'verified', 'role:author'])->prefix('author')->name('
     Route::get('media/selector', [AuthorMediaController::class, 'selector'])->name('media.selector');
 
     //Profile
-    Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
-        Route::get('/', [AuthorProfileController::class, 'edit'])->name('edit');
-        Route::put('/', [AuthorProfileController::class, 'update'])->name('update');
-        Route::delete('/avatar', [AuthorProfileController::class, 'removeAvatar'])->name('remove-avatar');
-        Route::get('/{user:username}', [AuthorProfileController::class, 'show'])->name('show');
-        Route::get('/completion', [AuthorProfileController::class, 'completion'])->name('completion');
-        Route::get('/statistics', [AuthorProfileController::class, 'statistics'])->name('statistics');
-    });
+    Route::get('/profile', [AuthorProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [AuthorProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/avatar', [AuthorProfileController::class, 'removeAvatar'])->name('profile.remove-avatar');
+});
+
+// Blog routes
+Route::name('blog.')->group(function () {
+    Route::get('/blog', [BlogController::class, 'index'])->name('index');
+    Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('show');
+    Route::get('/category/{category:slug}', [BlogController::class, 'category'])->name('category');
+    Route::get('/tag/{tag:slug}', [BlogController::class, 'tag'])->name('tag');
+    Route::get('/search/suggestions', [BlogController::class, 'searchSuggestions'])->name('blog.search.suggestions');
+    Route::get('/author/{user:username}', [BlogController::class, 'author'])->name('author');
 });

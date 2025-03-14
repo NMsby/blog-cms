@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-6 flex justify-between items-center">
         <h1 class="text-2xl font-bold">My Posts</h1>
-        <a href="{{ route('authorposts.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+        <a href="{{ route('author.posts.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
             Create New Post
         </a>
     </div>
@@ -40,7 +40,7 @@
                         {{ $post->created_at->format('M d, Y') }}
                     </td>
                     <td class="px-6 py-4 text-sm font-medium">
-                        <a href="{{ route('authorposts.edit', $post) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                        <a href="{{ route('author.posts.edit', $post) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
                         <a href="{{ route('blog.show', $post->slug) }}" class="text-green-600 hover:text-green-900">View</a>
                     </td>
                 </tr>
